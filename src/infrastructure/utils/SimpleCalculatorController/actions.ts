@@ -9,35 +9,36 @@ export const getSimpleEquationValues = (equation: string) => {
   };
 };
 
-export const doSimpleSum = ({ firstValue = "", secondValue = "" }): string => {
+const doSimpleSum = ({ firstValue = "", secondValue = "" }): string => {
   let result: number = Number(firstValue) + Number(secondValue);
 
   return String(result);
 };
 
-export const doSimpleDivision = ({
-  firstValue = "",
-  secondValue = "",
-}): string => {
+const doSimpleDivision = ({ firstValue = "", secondValue = "" }): string => {
   let result: number = Number(firstValue) / Number(secondValue);
 
   return String(result);
 };
 
-export const doSimpleSubtraction = ({
-  firstValue = "",
-  secondValue = "",
-}): string => {
+const doSimpleSubtraction = ({ firstValue = "", secondValue = "" }): string => {
   let result: number = Number(firstValue) - Number(secondValue);
 
   return String(result);
 };
 
-export const doSimpleMultiplication = ({
+const doSimpleMultiplication = ({
   firstValue = "",
   secondValue = "",
 }): string => {
   let result: number = Number(firstValue) * Number(secondValue);
 
   return String(result);
+};
+
+export {
+  doSimpleSum,
+  doSimpleDivision,
+  doSimpleSubtraction,
+  doSimpleMultiplication,
 };

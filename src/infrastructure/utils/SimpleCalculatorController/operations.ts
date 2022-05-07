@@ -1,9 +1,9 @@
 import { SimpleCalculatorActionTypes } from "../../../domain/store/simpleCalculator/slice";
 import {
-  doSimpleDivision,
-  doSimpleMultiplication,
-  doSimpleSubtraction,
   doSimpleSum,
+  doSimpleDivision,
+  doSimpleSubtraction,
+  doSimpleMultiplication,
 } from "./actions";
 
 export const getSimpleOperationActions = (): any => {

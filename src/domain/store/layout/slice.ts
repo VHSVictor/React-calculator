@@ -1,7 +1,7 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { LayoutModeTypes } from "../../models/SimpleScreen";
 import type { RootState } from "../index";
-import { LayoutState } from "./types";
+import { LayoutState } from "../../models/LayoutState";
+import { LayoutModeTypes } from "../../models/SimpleScreen";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export const initialState: LayoutState = {
   layoutMode: LayoutModeTypes.DAY,

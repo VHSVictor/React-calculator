@@ -7,25 +7,85 @@ import {
   calculatorSettings,
   defaultLayoutConfig,
   getBodyLayoutConfiguration,
-} from "../../../utils/SimpleyBody/config";
+  calculatorFunctionObj,
+} from "../../../utils/SimpleBody/config";
+import {
+  cleanAll,
+  setAction,
+  selectLastEquation,
+  setCurrentEquation,
+  selectCurrentEquation,
+} from "../../../../domain/store/simpleCalculator/slice";
+import {
+  cleanAllOperation,
+  handleWriteOperation,
+} from "../../../utils/SimpleBody/operations";
+import { getSimpleOperationActions } from "../../../utils/SimpleCalculatorController/operations";
 
 interface Props extends PropsFromRedux {}
 
-const SimpleBody: React.FC<Props> = ({ layoutMode }) => {
+const SimpleBody: React.FC<Props> = ({
+  cleanAll,
+  setAction,
+  layoutMode,
+  currentEquation,
+  setCurrentEquation,
+}) => {
   const [layoutConfig, setLayoutConfig] =
     useState<LayoutConfigModel>(defaultLayoutConfig);
 
   useEffect(() => {
     const bodyConfig = getBodyLayoutConfiguration(layoutMode);
+
     setLayoutConfig(bodyConfig);
   }, [layoutMode]);
+
+  const handleCallAction = (action: string) => {
+    const operationActions = getSimpleOperationActions();
+    const currentOperation = operationActions[action] || false;
+
+    if (!currentOperation) return;
+
+    setAction(currentOperation);
+  };
+
+  const handleOperation = (settings: calculatorFunctionObj) => {
+    const option = settings?.label;
+
+    const isOperation = option.match(/[x÷+=-a-z]/);
+    //criar utils para regex
+    const fullOperation = currentEquation.match(
+      /[-]?([\d]+)?.?[\d]+([x÷+-])[-]?([\d]+)?.?\d+/
+    );
+
+    if (isOperation) {
+      if (fullOperation) {
+        const action = fullOperation?.[2];
+        return handleCallAction(action);
+      }
+
+      if (cleanAllOperation(option)) return cleanAll();
+    }
+
+    const newEquation = handleWriteOperation(currentEquation, option);
+
+    if (newEquation === undefined) return;
+
+    setCurrentEquation(newEquation);
+  };
 
   const displayFunctions = () => {
     const { functions } = calculatorSettings;
 
     return functions?.map((settings) => {
       return (
-        <div className={`item  ${settings.cssClasses}`}>{settings?.label}</div>
+        <div
+          key={settings.label}
+          onClick={() => handleOperation(settings)}
+          className={`item  ${settings.cssClasses}`}
+        >
+          {settings?.label}
+        </div>
       );
     });
   };
@@ -41,9 +101,17 @@ const SimpleBody: React.FC<Props> = ({ layoutMode }) => {
 
 const mapState = (state: RootState) => ({
   layoutMode: state.layout.layoutMode,
+  lastEquation: selectLastEquation(state),
+  currentEquation: selectCurrentEquation(state),
 });
 
-const connector = connect(mapState, {});
+const mapDispatch = {
+  cleanAll,
+  setAction,
+  setCurrentEquation,
+};
+
+const connector = connect(mapState, mapDispatch);
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 

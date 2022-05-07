@@ -1,6 +1,14 @@
 import { LayoutModeTypes } from "../../../domain/models/SimpleScreen";
 
-export const calculatorSettings = {
+export interface calculatorSettingType {
+  functions: calculatorFunctionObj[];
+}
+export interface calculatorFunctionObj {
+  label: string;
+  cssClasses?: string;
+}
+
+export const calculatorSettings: calculatorSettingType = {
   functions: [
     { label: "AC", cssClasses: "itemBlue" },
     { label: "±", cssClasses: "itemBlue" },

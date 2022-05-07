@@ -1,24 +1,34 @@
 import "./styles.scss";
-import React, { ReactElement, useState, useEffect } from "react";
+import {
+  layoutSlice,
+  selectLayoutMode,
+} from "../../../../domain/store/layout/slice";
 import SunIcon from "../../../../images/sun24.svg";
 import MoonIcon from "../../../../images/moon.svg";
 import { RootState } from "../../../../domain/store";
 import { connect, ConnectedProps } from "react-redux";
 import {
-  layoutSlice,
-  selectLayoutMode,
-} from "../../../../domain/store/layout/slice";
+  selectLastEquation,
+  selectCurrentEquation,
+} from "../../../../domain/store/simpleCalculator/slice";
+import React, { ReactElement, useState, useEffect } from "react";
 import { LayoutModeTypes } from "../../../../domain/models/SimpleScreen";
 import { getLayoutConfiguration } from "../../../utils/SimpleScreen/config";
 import { defaultConfigurations } from "../../../utils/SimpleScreen/default";
 
 interface Props extends PropsFromRedux {}
 
-const SimpleScreen: React.FC<Props> = ({ changeLayoutMode, layoutMode }) => {
+const SimpleScreen: React.FC<Props> = ({
+  layoutMode,
+  lastEquation,
+  currentEquation,
+  changeLayoutMode,
+}) => {
   const [configurations, setConfigurations] = useState(defaultConfigurations);
 
   useEffect(() => {
     const configuration = getLayoutConfiguration(layoutMode);
+
     setConfigurations(configuration);
   }, [layoutMode]);
 
@@ -50,6 +60,18 @@ const SimpleScreen: React.FC<Props> = ({ changeLayoutMode, layoutMode }) => {
 
   const { container: containerStyle } = configurations;
 
+  const displayLastEquation = () => {
+    if (!lastEquation) return <></>;
+
+    return <span>{lastEquation}</span>;
+  };
+
+  const displayCurrentEquation = () => {
+    if (!currentEquation) return <></>;
+
+    return <span>{currentEquation}</span>;
+  };
+
   return (
     <div className={"screenContainer " + containerStyle}>
       <div className="lightContainer">
@@ -57,12 +79,8 @@ const SimpleScreen: React.FC<Props> = ({ changeLayoutMode, layoutMode }) => {
         {displayMoon()}
       </div>
       <div className="calculationContainer">
-        <div className="operation">
-          <span>308 x 42</span>
-        </div>
-        <div className="result">
-          <span>19,936</span>
-        </div>
+        <div className="operation">{displayLastEquation()}</div>
+        <div className="result">{displayCurrentEquation()}</div>
       </div>
     </div>
   );
@@ -70,6 +88,8 @@ const SimpleScreen: React.FC<Props> = ({ changeLayoutMode, layoutMode }) => {
 
 const mapState = (state: RootState) => ({
   layoutMode: selectLayoutMode(state),
+  lastEquation: selectLastEquation(state),
+  currentEquation: selectCurrentEquation(state),
 });
 
 const mapDispatch = {
